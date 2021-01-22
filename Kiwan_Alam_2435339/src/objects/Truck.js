@@ -16,7 +16,7 @@ class Truck extends THREE.Group {
 
     //Fahrerhaus (Modellierung in Blender; gerundete Koordinaten übernommen)
         var fahrerhausGroup = new THREE.Group();
-        fahrerhausGroup.position.set(20.5,6,0);
+        fahrerhausGroup.position.set(20.5,5,0);
 
         var fahrerhausShape = new THREE.Shape();
         fahrerhausShape.moveTo(-2.15 * SCALE,2.65 * SCALE);
@@ -26,7 +26,7 @@ class Truck extends THREE.Group {
         fahrerhausShape.lineTo(2.15 * SCALE ,0.95 * SCALE);
         fahrerhausShape.lineTo(2.25 * SCALE ,0.6 * SCALE);
         fahrerhausShape.lineTo(2.3 * SCALE,-1 * SCALE);
-        fahrerhausShape.lineTo(-2.15 * SCALE,-1 * SCALE);
+        fahrerhausShape.lineTo(-2.15 * SCALE,-1 * SCALE); //Unterseite 22,5 Einheiten
         fahrerhausShape.lineTo(-2.15 * SCALE,2.65 * SCALE);
         var extrudeSettings = {
             steps: 1,
@@ -35,10 +35,10 @@ class Truck extends THREE.Group {
         };
         var fahrerhausGeometry = new THREE.ExtrudeGeometry(fahrerhausShape, extrudeSettings);
         var fahrerhausMaterial = new THREE.MeshLambertMaterial({
-            color: 0xFFFFFF
+            color: 0xE3ECD5
         });
         var fahrerhaus = new THREE.Mesh(fahrerhausGeometry, fahrerhausMaterial);
-        //fahrerhaus.position.set(20.5, 16, 0);
+        fahrerhaus.position.z = -10;
 
         fahrerhausGroup.add(fahrerhaus);
 
@@ -53,7 +53,7 @@ class Truck extends THREE.Group {
         //windschutzscheibe.position.set(20.75,26,10);
         windschutzscheibe.position.x = 0.25;
         windschutzscheibe.position.y = 10;
-        windschutzscheibe.position.z = 10;
+        //windschutzscheibe.position.z = 10;
         windschutzscheibe.rotation.z = 57 * DEG_TO_RAD;
         windschutzscheibe.name = "Windschutzscheibe";
         fahrerhausGroup.add(windschutzscheibe);
@@ -82,19 +82,19 @@ class Truck extends THREE.Group {
             color: 0x444444
         });
         var fenster1 = new THREE.Mesh(fensterGeometry, fensterMaterial);
-        fenster1.position.z = -0.1;
+        fenster1.position.z = -10.1;
         fenster.add(fenster1);
 
         var fenster2 = new THREE.Mesh(fensterGeometry, fensterMaterial);
-        fenster2.position.z = 19.6;
+        fenster2.position.z = 9.6;
         fenster.add(fenster2);
 
         fahrerhausGroup.add(fenster);
 
 
     //Leuchten
-        var lampen = new THREE.Group();
-        lampen.position.set(32, 4, 10);
+        var frontlampen = new THREE.Group();
+        frontlampen.position.set(32, 4, 0);
         //var lampeGeometry = new THREE.CylinderGeometry(1, 1, 1, 8, 1, false);
         var frontlampeGeometry = new THREE.BoxGeometry(0.5, 2.5, 4);
         var frontlampeMaterial = new THREE.MeshLambertMaterial({
@@ -106,24 +106,26 @@ class Truck extends THREE.Group {
         var frontlampe2 = new THREE.Mesh(frontlampeGeometry, frontlampeMaterial);
         frontlampe2.position.z = -7;
         //frontlampe2.rotation.z = -90 * DEG_TO_RAD;
+        frontlampen.add(frontlampe1, frontlampe2)
 
+        var reflektoren = new THREE.Group();
+        reflektoren.position.set(-21.5, 5, 0);
         var reflektorGeometry = new THREE.BoxGeometry(0.5, 1.5, 4);
         var reflektorMaterial = new THREE.MeshLambertMaterial({
             color: 0xBA0000,
             emissive: 0xBA0000,
+            emissiveIntensity: 0.1,
             transparent: true,
             opacity: 0.8
         });
 
         var reflektor1 = new THREE.Mesh(reflektorGeometry, reflektorMaterial);
-        reflektor1.position.x = -53;
         reflektor1.position.z = 8;
         var reflektor2 = new THREE.Mesh(reflektorGeometry, reflektorMaterial);
-        reflektor2.position.x = -53;
         reflektor2.position.z = -8;
-        lampen.add(frontlampe1, frontlampe2, reflektor1, reflektor2);
+        reflektoren.add(reflektor1, reflektor2);
 
-        truck.add(lampen);
+        truck.add(frontlampen, reflektoren);
 
 
 
@@ -147,8 +149,8 @@ class Truck extends THREE.Group {
         ];
          */
         var anhänger = new THREE.Mesh(anhängerGeometry, anhängerMaterial);
-        anhänger.position.set(-5, 15, 10);
-        truck.add(anhänger);
+        anhänger.position.set(-5.25, 16, 0);
+
 
         var texturPlaneGeometry = new THREE.PlaneGeometry(24,12);
         var texturPlaneMaterial = new THREE.MeshLambertMaterial({
@@ -169,6 +171,20 @@ class Truck extends THREE.Group {
         truck.add(texturPlaneMesh1, texturPlaneMesh2);
 
 
+    //Fläche unter Anhänger
+        var gerüstGeometry = new THREE.BoxGeometry(31, 2, 25);
+        var gerüstMaterial = new THREE.MeshLambertMaterial({
+           color: 0x000000
+        });
+        var gerüst = new THREE.Mesh(gerüstGeometry, gerüstMaterial);
+        gerüst.position.x = -0.5;
+        gerüst.position.y = -11;
+
+        anhänger.add(gerüst);
+        truck.add(anhänger);
+
+
+
 
     //Reifen und Felgen
         var reifen = new THREE.Group();
@@ -178,15 +194,33 @@ class Truck extends THREE.Group {
         var reifenMaterial = new THREE.MeshLambertMaterial({
             color: 0x333333
         });
+        var bumpMaterial = new THREE.MeshPhongMaterial({
+           color: 0x333333
+        });
+        bumpMaterial.bumpMap = new THREE.TextureLoader().load('src/images/Tire_BumpMap');
+        bumpMaterial.bumpScale = 1.0;
+
+        /*
+        var materialArray = [
+          bumpMaterial,
+          bumpMaterial,
+          bumpMaterial,
+          bumpMaterial,
+          bumpMaterial,
+          bumpMaterial
+        ];
+
+         */
 
         var felgeGeometry = new THREE.CylinderGeometry(2.5,2.5,1.25,16,1,false);
         var felgeMaterial = new THREE.MeshLambertMaterial({
             color: 0x888888
         });
 
-        var reifen1 = new THREE.Mesh(reifenGeometry, reifenMaterial);
+        var reifen1 = new THREE.Mesh(reifenGeometry, bumpMaterial);
         reifen1.rotation.x = -90 * DEG_TO_RAD;
         reifen1.position.x = 20;
+        reifen1.position.z = -10;
 
         var felge1 = new THREE.Mesh(felgeGeometry, felgeMaterial);
         felge1.position.y = 0.65;
@@ -195,7 +229,7 @@ class Truck extends THREE.Group {
         var reifen2 = new THREE.Mesh(reifenGeometry, reifenMaterial);
         reifen2.rotation.x = -90 * DEG_TO_RAD;
         reifen2.position.x = 20;
-        reifen2.position.z = 20;
+        reifen2.position.z = 10;
 
         var felge2 = new THREE.Mesh(felgeGeometry, felgeMaterial);
         felge2.position.y = -0.65;
@@ -204,6 +238,7 @@ class Truck extends THREE.Group {
         var reifen3 = new THREE.Mesh(reifenGeometry, reifenMaterial);
         reifen3.rotation.x = -90 * DEG_TO_RAD;
         reifen3.position.x = -10;
+        reifen3.position.z = -10;
 
         var felge3 = new THREE.Mesh(felgeGeometry, felgeMaterial);
         felge3.position.y = 0.65;
@@ -212,7 +247,7 @@ class Truck extends THREE.Group {
         var reifen4 = new THREE.Mesh(reifenGeometry, reifenMaterial);
         reifen4.rotation.x = -90 * DEG_TO_RAD;
         reifen4.position.x = -10;
-        reifen4.position.z = 20;
+        reifen4.position.z = 10;
 
         var felge4 = new THREE.Mesh(felgeGeometry, felgeMaterial);
         felge4.position.y = -0.65;

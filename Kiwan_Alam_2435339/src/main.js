@@ -56,7 +56,7 @@ function main() {
 
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(new THREE.Color(0xFFFFFF));
+    renderer.setClearColor(new THREE.Color(0xD5E3EC));
     renderer.shadowMap.enabled = true;
 
     document.getElementById("3d_content").appendChild(renderer.domElement);
