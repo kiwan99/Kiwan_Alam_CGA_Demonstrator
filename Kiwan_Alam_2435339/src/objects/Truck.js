@@ -3,8 +3,13 @@ class Truck extends THREE.Group {
     constructor() {
         super();
 
-        this.animations = new Array();
         this.addParts();
+        //this.animations = new Array();
+        this.sounds = new Map();
+        this.animationMixer = null;
+        this.state = {
+            rückwärtsgang: false
+        };
     }
 
     addParts() {
@@ -51,7 +56,7 @@ class Truck extends THREE.Group {
         });
         var windschutzscheibe = new THREE.Mesh(windschutzscheibeGeometry, windschutzscheibeMaterial);
         //windschutzscheibe.position.set(20.75,26,10);
-        windschutzscheibe.position.x = 0.25;
+        windschutzscheibe.position.x = 0.5;
         windschutzscheibe.position.y = 10;
         //windschutzscheibe.position.z = 10;
         windschutzscheibe.rotation.z = 57 * DEG_TO_RAD;
@@ -83,6 +88,7 @@ class Truck extends THREE.Group {
         });
         var fenster1 = new THREE.Mesh(fensterGeometry, fensterMaterial);
         fenster1.position.z = -10.1;
+        fenster1.name = "linkes Fenster"
         fenster.add(fenster1);
 
         var fenster2 = new THREE.Mesh(fensterGeometry, fensterMaterial);
@@ -197,7 +203,7 @@ class Truck extends THREE.Group {
         var bumpMaterial = new THREE.MeshPhongMaterial({
            color: 0x333333
         });
-        bumpMaterial.bumpMap = new THREE.TextureLoader().load('src/images/Tire_BumpMap');
+        bumpMaterial.bumpMap = new THREE.TextureLoader().load('src/images/Tire_BumpMap.png');
         bumpMaterial.bumpScale = 1.0;
 
         /*
@@ -223,7 +229,7 @@ class Truck extends THREE.Group {
         reifen1.position.z = -10;
 
         var felge1 = new THREE.Mesh(felgeGeometry, felgeMaterial);
-        felge1.position.y = 0.65;
+        felge1.position.y = 0.75;
         reifen1.add(felge1);
 
         var reifen2 = new THREE.Mesh(reifenGeometry, reifenMaterial);
@@ -232,7 +238,7 @@ class Truck extends THREE.Group {
         reifen2.position.z = 10;
 
         var felge2 = new THREE.Mesh(felgeGeometry, felgeMaterial);
-        felge2.position.y = -0.65;
+        felge2.position.y = -0.75;
         reifen2.add(felge2);
 
         var reifen3 = new THREE.Mesh(reifenGeometry, reifenMaterial);
@@ -241,7 +247,7 @@ class Truck extends THREE.Group {
         reifen3.position.z = -10;
 
         var felge3 = new THREE.Mesh(felgeGeometry, felgeMaterial);
-        felge3.position.y = 0.65;
+        felge3.position.y = 0.75;
         reifen3.add(felge3);
 
         var reifen4 = new THREE.Mesh(reifenGeometry, reifenMaterial);
@@ -250,11 +256,20 @@ class Truck extends THREE.Group {
         reifen4.position.z = 10;
 
         var felge4 = new THREE.Mesh(felgeGeometry, felgeMaterial);
-        felge4.position.y = -0.65;
+        felge4.position.y = -0.75;
         reifen4.add(felge4);
 
         reifen.add(reifen1, reifen2, reifen3, reifen4);
         truck.add(reifen);
+
+    //FBX BunnyFromFile
+        //Instanziierung in Truck.js, damit er bei Animation mitfährt
+        var bunny = new BunnyFromFile();
+        bunny.scale.set(2, 2, 2);
+        bunny.position.x = 15;
+        bunny.position.y = 20.1;
+        bunny.rotation.y = 90 * DEG_TO_RAD;
+        truck.add(bunny);
 
 
     //Animationen
@@ -262,11 +277,11 @@ class Truck extends THREE.Group {
         var translate = 100;
         var rotate = 1000;
 
-        //EDIT
+
         var tweens = {
             forward: false,
 
-            forwardTruckTranslation : new TWEEN.Tween(truck.position).to(new THREE.Vector3(truck.position.x + translate,
+            forwardTruckTranslation: new TWEEN.Tween(truck.position).to(new THREE.Vector3(truck.position.x + translate,
                 truck.position.y, truck.position.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
             forwardReifenRotation1: new TWEEN.Tween(reifen1.rotation).to(new THREE.Vector3(reifen1.rotation.x,
                 reifen1.rotation.y + rotate, reifen1.rotation.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
@@ -291,13 +306,21 @@ class Truck extends THREE.Group {
         };
         windschutzscheibe.userData = tweens;
 
+        this.animationMixer = new THREE.AnimationMixer(truck);
+        this.animationMixer.addEventListener("finished", setTruckSound);
+
+        //this.animations.push(tweens.backwardTruckTranslation);
         this.add(truck);
+    }
 
+    //Sounds
+    loadSounds(soundscape) {
+        var hupe = soundscape.createSound("src/sound/files/horn.mp3", 50, true);
+        this.sounds.set("Hupe", hupe);
+        this.add(hupe);
 
-
-
-
-
-
+        var rückwärtsgang = soundscape.createSound("src/sound/files/beep.wav", 50, true);
+        this.sounds.set("Rückwärtsgang", rückwärtsgang);
+        this.add(rückwärtsgang);
     }
 }

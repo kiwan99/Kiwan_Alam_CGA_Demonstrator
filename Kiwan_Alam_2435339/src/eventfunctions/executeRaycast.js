@@ -23,6 +23,9 @@ function executeRaycast(event) {
                 firstHit.userData.forwardReifenRotation2.start();
                 firstHit.userData.forwardReifenRotation3.start();
                 firstHit.userData.forwardReifenRotation4.start();
+
+                truck.state.rückwärtsgang = false;
+                window.dispatchEvent(new Event("truckStateChanged"));
             } else {
                 firstHit.userData.forwardTruckTranslation.stop();
                 firstHit.userData.forwardReifenRotation1.stop();
@@ -35,8 +38,18 @@ function executeRaycast(event) {
                 firstHit.userData.backwardReifenRotation2.start();
                 firstHit.userData.backwardReifenRotation3.start();
                 firstHit.userData.backwardReifenRotation4.start();
+
+                truck.state.rückwärtsgang = true;
+                window.dispatchEvent(new Event("truckStateChanged"));
             }
 
         }
+
+        else if (firstHit.name == "linkes Fenster") {
+            //truck.sounds.get("Hupe").play();
+            //truck.state.endposition = true;
+            //window.dispatchEvent(new Event("truckStateChanged"));
+        }
+
     }
 }

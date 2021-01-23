@@ -10,19 +10,20 @@ document.write('<script type="text/javascript" src="./../lib/ThreeCSG-1/three-cs
 
 document.write('<script type="text/javascript" src="src/objects/Lights.js"></script>');
 document.write('<script type="text/javascript" src="src/objects/Truck.js"></script>');
+document.write('<script type="text/javascript" src="src/objects/ContainerFromFile.js"></script>');
+document.write('<script type="text/javascript" src="src/objects/BunnyFromFile.js"></script>');
+document.write('<script type="text/javascript" src="src/objects/Road.js"></script>');
 //document.write('<script type="text/javascript" src="src/animation/Animation.js"></script>');
 document.write('<script type="text/javascript" src="src/animation/Tween.js"></script>');
-/*
-document.write('<script type="text/javascript" src="src/physics/Physics.js"></script>');
+//document.write('<script type="text/javascript" src="src/physics/Physics.js"></script>');
 document.write('<script type="text/javascript" src="src/sound/Soundscape.js"></script>');
-*/
 
 // Event functions
 
 document.write('<script type="text/javascript" src="src/eventfunctions/updateAspectRatio.js"></script>');
 document.write('<script type="text/javascript" src="src/eventfunctions/calculateMousePosition.js"></script>');
 document.write('<script type="text/javascript" src="src/eventfunctions/executeRaycast.js"></script>');
-//document.write('<script type="text/javascript" src="src/eventfunctions/setTruckSound.js"></script>');
+document.write('<script type="text/javascript" src="src/eventfunctions/setTruckSound.js"></script>');
 
 const DEG_TO_RAD = Math.PI / 180;
 
@@ -33,8 +34,15 @@ function main() {
     var axes = new THREE.AxesHelper(20);
     scene.add(axes);
 
-    var truck = new Truck();
+    truck = new Truck();
     scene.add(truck);
+
+    var container = new ContainerFromFile();
+    container.position.set(20,0,40);
+    container.scale.set(0.1, 0.1, 0.1);
+    scene.add(container);
+
+    scene.add(new Road(2000, 2000, 16));
 
     var lights = new Lights();
     scene.add(lights.createAmbientLight(0.4));
@@ -65,13 +73,21 @@ function main() {
     orbitControls.target = new THREE.Vector3(0, 0, 0);
     orbitControls.update();
 
-    //var clock = new THREE.Clock();
+    var soundscape = new Soundscape();
+    truck.loadSounds(soundscape);
+    camera.add(soundscape.getAudioListener());
+
+    var clock = new THREE.Clock();
 
     function mainLoop() {
 
         stats.begin();
 
-        //var delta = clock.getDelta();
+        var delta = clock.getDelta();
+
+        if (truck.animationMixer != null) {
+            truck.animationMixer.update(delta);
+        }
 
         TWEEN.update();
 
@@ -81,9 +97,16 @@ function main() {
     }
 
     mainLoop();
+
     window.onresize = updateAspectRatio;
     window.onmousemove = calculateMousePosition;
     window.onclick = executeRaycast;
+
+    window.addEventListener("truckStateChanged", setTruckSound);
+    window.dispatchEvent(new Event("truckStateChanged"));
 }
 
-window.onload = main;
+document.getElementById("startButton").addEventListener("click", function (event) {
+    main();
+    document.getElementById("overlay").remove();
+});
