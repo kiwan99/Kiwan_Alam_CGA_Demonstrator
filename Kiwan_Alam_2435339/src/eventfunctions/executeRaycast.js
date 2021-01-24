@@ -26,6 +26,8 @@ function executeRaycast(event) {
 
                 truck.state.rückwärtsgang = false;
                 window.dispatchEvent(new Event("truckStateChanged"));
+                //truck.sounds.get("Rückwärtsgang").pause();
+
             } else {
                 firstHit.userData.forwardTruckTranslation.stop();
                 firstHit.userData.forwardReifenRotation1.stop();
@@ -46,9 +48,8 @@ function executeRaycast(event) {
         }
 
         else if (firstHit.name == "linkes Fenster") {
-            //truck.sounds.get("Hupe").play();
-            //truck.state.endposition = true;
-            //window.dispatchEvent(new Event("truckStateChanged"));
+            truck.sounds.get("Hupe").setVolume(0.7);
+            truck.sounds.get("Hupe").play();
         }
 
     }

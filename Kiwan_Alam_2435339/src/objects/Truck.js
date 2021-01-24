@@ -1,4 +1,5 @@
 class Truck extends THREE.Group {
+    tweens;
 
     constructor() {
         super();
@@ -6,7 +7,7 @@ class Truck extends THREE.Group {
         this.addParts();
         //this.animations = new Array();
         this.sounds = new Map();
-        this.animationMixer = null;
+        //this.animationMixer = null;
         this.state = {
             rückwärtsgang: false
         };
@@ -40,12 +41,38 @@ class Truck extends THREE.Group {
         };
         var fahrerhausGeometry = new THREE.ExtrudeGeometry(fahrerhausShape, extrudeSettings);
         var fahrerhausMaterial = new THREE.MeshLambertMaterial({
-            color: 0xE3ECD5
+            color: 0xD5E3EC
         });
         var fahrerhaus = new THREE.Mesh(fahrerhausGeometry, fahrerhausMaterial);
         fahrerhaus.position.z = -10;
-
         fahrerhausGroup.add(fahrerhaus);
+
+
+    //Kühlergrill
+        var kühlergrillGeometry = new THREE.BoxGeometry(8, 3, 0.5);
+        var kühlergrillMaterial = new THREE.MeshStandardMaterial({
+            color: 0xD3D3D3,
+            metalness: 0.5
+        });
+
+        var bumpMaterial = new THREE.MeshPhongMaterial({
+            color: kühlergrillMaterial.color
+        });
+        bumpMaterial.bumpMap = new THREE.TextureLoader().load("src/images/bump.png");
+        var materialArray = [
+            kühlergrillMaterial,
+            kühlergrillMaterial,
+            kühlergrillMaterial,
+            kühlergrillMaterial,
+            kühlergrillMaterial,
+            bumpMaterial
+        ];
+
+        var kühlerGrill = new THREE.Mesh(kühlergrillGeometry, materialArray);
+        kühlerGrill.position.set(32, 4, 0);
+        kühlerGrill.rotation.y = -90 * DEG_TO_RAD;
+        truck.add(kühlerGrill);
+
 
 
     //Autoglas
@@ -55,17 +82,14 @@ class Truck extends THREE.Group {
             color: 0x444444
         });
         var windschutzscheibe = new THREE.Mesh(windschutzscheibeGeometry, windschutzscheibeMaterial);
-        //windschutzscheibe.position.set(20.75,26,10);
         windschutzscheibe.position.x = 0.5;
         windschutzscheibe.position.y = 10;
-        //windschutzscheibe.position.z = 10;
         windschutzscheibe.rotation.z = 57 * DEG_TO_RAD;
         windschutzscheibe.name = "Windschutzscheibe";
         fahrerhausGroup.add(windschutzscheibe);
 
 
         var fenster = new THREE.Group();
-        //fenster.position.set(18,21,0);
         fenster.position.x = -2.5;
         fenster.position.y = 5;
 
@@ -101,18 +125,33 @@ class Truck extends THREE.Group {
     //Leuchten
         var frontlampen = new THREE.Group();
         frontlampen.position.set(32, 4, 0);
-        //var lampeGeometry = new THREE.CylinderGeometry(1, 1, 1, 8, 1, false);
         var frontlampeGeometry = new THREE.BoxGeometry(0.5, 2.5, 4);
         var frontlampeMaterial = new THREE.MeshLambertMaterial({
-            color: 0xFFFF70
+            color: 0xFFFFB5,
+            transparent: true,
+            opacity: 0.5
         });
+
+        var lichtGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.1, 32, 1, false);
+        var lichtMaterial = new THREE.MeshLambertMaterial({
+            color: 0xFFFFFF
+        });
+
+
         var frontlampe1 = new THREE.Mesh(frontlampeGeometry, frontlampeMaterial);
         frontlampe1.position.z = 7;
-        //frontlampe1.rotation.z = -90 * DEG_TO_RAD;
+        var licht1 = new THREE.Mesh(lichtGeometry, lichtMaterial);
+        licht1.rotation.z = -90 * DEG_TO_RAD;
+        frontlampe1.add(licht1);
+
         var frontlampe2 = new THREE.Mesh(frontlampeGeometry, frontlampeMaterial);
         frontlampe2.position.z = -7;
-        //frontlampe2.rotation.z = -90 * DEG_TO_RAD;
+        var licht2 = new THREE.Mesh(lichtGeometry, lichtMaterial);
+        licht2.rotation.z = -90 * DEG_TO_RAD;
+        frontlampe2.add(licht2);
+
         frontlampen.add(frontlampe1, frontlampe2)
+
 
         var reflektoren = new THREE.Group();
         reflektoren.position.set(-21.5, 5, 0);
@@ -120,7 +159,7 @@ class Truck extends THREE.Group {
         var reflektorMaterial = new THREE.MeshLambertMaterial({
             color: 0xBA0000,
             emissive: 0xBA0000,
-            emissiveIntensity: 0.1,
+            emissiveIntensity: 0.5,
             transparent: true,
             opacity: 0.8
         });
@@ -133,27 +172,15 @@ class Truck extends THREE.Group {
 
         truck.add(frontlampen, reflektoren);
 
-
-
-
         truck.add(fahrerhausGroup);
 
 
     //Anhänger
+
         var anhängerGeometry = new THREE.BoxGeometry(30, 20, 25);
         var anhängerMaterial = new THREE.MeshLambertMaterial({
             color: 0xECD5E3
         });
-        /*
-        var anhängerMaterialArray = [
-            anhängerMaterial,
-            anhängerMaterial,
-            anhängerMaterial,
-            anhängerMaterial,
-            texturMaterial,
-            texturMaterial
-        ];
-         */
         var anhänger = new THREE.Mesh(anhängerGeometry, anhängerMaterial);
         anhänger.position.set(-5.25, 16, 0);
 
@@ -191,7 +218,6 @@ class Truck extends THREE.Group {
 
 
 
-
     //Reifen und Felgen
         var reifen = new THREE.Group();
         //reifen.rotation.x = -90 * DEG_TO_RAD;
@@ -200,28 +226,12 @@ class Truck extends THREE.Group {
         var reifenMaterial = new THREE.MeshLambertMaterial({
             color: 0x333333
         });
-        /*
-        var bumpMaterial = new THREE.MeshPhongMaterial({
-           color: 0x333333
-        });
-        bumpMaterial.bumpMap = new THREE.TextureLoader().load('src/images/Tire_BumpMap.png');
-        bumpMaterial.bumpScale = 1.0;
-
-        var materialArray = [
-          bumpMaterial,
-          bumpMaterial,
-          bumpMaterial,
-          bumpMaterial,
-          bumpMaterial,
-          bumpMaterial
-        ];
-
-         */
 
         var felgeGeometry = new THREE.CylinderGeometry(2.5,2.5,1.25,16,1,false);
         var felgeMaterial = new THREE.MeshLambertMaterial({
             color: 0x888888
         });
+
 
         var reifen1 = new THREE.Mesh(reifenGeometry, reifenMaterial);
         reifen1.rotation.x = -90 * DEG_TO_RAD;
@@ -239,6 +249,7 @@ class Truck extends THREE.Group {
 
         var felge2 = new THREE.Mesh(felgeGeometry, felgeMaterial);
         felge2.position.y = -0.75;
+        felge2.rotation.x = 180 * DEG_TO_RAD;
         reifen2.add(felge2);
 
         var reifen3 = new THREE.Mesh(reifenGeometry, reifenMaterial);
@@ -257,6 +268,7 @@ class Truck extends THREE.Group {
 
         var felge4 = new THREE.Mesh(felgeGeometry, felgeMaterial);
         felge4.position.y = -0.75;
+        felge4.rotation.x = 180 * DEG_TO_RAD;
         reifen4.add(felge4);
 
         reifen.add(reifen1, reifen2, reifen3, reifen4);
@@ -273,53 +285,50 @@ class Truck extends THREE.Group {
 
 
     //Animationen
-        var speed = 3000;
+        var duration = 3000;
         var translate = 150;
         var rotate = 1000;
 
 
-        var tweens = {
+        this.tweens = {
             forward: false,
 
             forwardTruckTranslation: new TWEEN.Tween(truck.position).to(new THREE.Vector3(truck.position.x + translate,
-                truck.position.y, truck.position.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
+                truck.position.y, truck.position.z), duration).easing(TWEEN.Easing.Quadratic.InOut),
             forwardReifenRotation1: new TWEEN.Tween(reifen1.rotation).to(new THREE.Vector3(reifen1.rotation.x,
-                reifen1.rotation.y + rotate, reifen1.rotation.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
+                reifen1.rotation.y + rotate, reifen1.rotation.z), duration).easing(TWEEN.Easing.Quadratic.InOut),
             forwardReifenRotation2: new TWEEN.Tween(reifen2.rotation).to(new THREE.Vector3(reifen2.rotation.x,
-                reifen2.rotation.y + rotate, reifen2.rotation.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
+                reifen2.rotation.y + rotate, reifen2.rotation.z), duration).easing(TWEEN.Easing.Quadratic.InOut),
             forwardReifenRotation3: new TWEEN.Tween(reifen3.rotation).to(new THREE.Vector3(reifen3.rotation.x,
-                reifen3.rotation.y + rotate, reifen3.rotation.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
+                reifen3.rotation.y + rotate, reifen3.rotation.z), duration).easing(TWEEN.Easing.Quadratic.InOut),
             forwardReifenRotation4: new TWEEN.Tween(reifen4.rotation).to(new THREE.Vector3(reifen4.rotation.x,
-                reifen4.rotation.y + rotate, reifen4.rotation.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
+                reifen4.rotation.y + rotate, reifen4.rotation.z), duration).easing(TWEEN.Easing.Quadratic.InOut),
 
 
             backwardTruckTranslation: new TWEEN.Tween(truck.position).to(new THREE.Vector3(truck.position.x,
-                truck.position.y, truck.position.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
+                truck.position.y, truck.position.z), duration).easing(TWEEN.Easing.Quadratic.InOut),
             backwardReifenRotation1: new TWEEN.Tween(reifen1.rotation).to(new THREE.Vector3(reifen1.rotation.x,
-                reifen1.rotation.y, reifen1.rotation.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
+                reifen1.rotation.y, reifen1.rotation.z), duration).easing(TWEEN.Easing.Quadratic.InOut),
             backwardReifenRotation2: new TWEEN.Tween(reifen2.rotation).to(new THREE.Vector3(reifen2.rotation.x,
-                reifen2.rotation.y, reifen2.rotation.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
+                reifen2.rotation.y, reifen2.rotation.z), duration).easing(TWEEN.Easing.Quadratic.InOut),
             backwardReifenRotation3: new TWEEN.Tween(reifen3.rotation).to(new THREE.Vector3(reifen3.rotation.x,
-                reifen3.rotation.y, reifen3.rotation.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
+                reifen3.rotation.y, reifen3.rotation.z), duration).easing(TWEEN.Easing.Quadratic.InOut),
             backwardReifenRotation4: new TWEEN.Tween(reifen4.rotation).to(new THREE.Vector3(reifen4.rotation.x,
-                reifen4.rotation.y, reifen4.rotation.z), speed).easing(TWEEN.Easing.Quadratic.InOut),
+                reifen4.rotation.y, reifen4.rotation.z), duration).easing(TWEEN.Easing.Quadratic.InOut),
         };
-        windschutzscheibe.userData = tweens;
+        windschutzscheibe.userData = this.tweens;
 
-        this.animationMixer = new THREE.AnimationMixer(truck);
-        this.animationMixer.addEventListener("finished", setTruckSound);
-
-        //this.animations.push(tweens.backwardTruckTranslation);
         this.add(truck);
+
     }
 
     //Sounds
     loadSounds(soundscape) {
-        var hupe = soundscape.createSound("src/sound/files/horn.mp3", 50, true);
+        var hupe = soundscape.createSound("src/sound/files/horn.wav", 100, false);
         this.sounds.set("Hupe", hupe);
         this.add(hupe);
 
-        var rückwärtsgang = soundscape.createSound("src/sound/files/beep.mp3", 50, true);
+        var rückwärtsgang = soundscape.createSound("src/sound/files/beep.mp3", 50, false);
         this.sounds.set("Rückwärtsgang", rückwärtsgang);
         this.add(rückwärtsgang);
     }

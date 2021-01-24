@@ -69,7 +69,7 @@ function main() {
 
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setClearColor(new THREE.Color(0xD5E3EC));
+    renderer.setClearColor(new THREE.Color(0xE3ECD5));
     renderer.shadowMap.enabled = true;
 
     document.getElementById("3d_content").appendChild(renderer.domElement);
@@ -81,6 +81,7 @@ function main() {
 
     var soundscape = new Soundscape();
     truck.loadSounds(soundscape);
+    truck.tweens.backwardTruckTranslation.onComplete(function () {truck.sounds.get("Rückwärtsgang").stop()});
     camera.add(soundscape.getAudioListener());
 
     var clock = new THREE.Clock();
