@@ -10,7 +10,7 @@ document.write('<script type="text/javascript" src="./../lib/ThreeCSG-1/three-cs
 
 document.write('<script type="text/javascript" src="src/objects/Lights.js"></script>');
 document.write('<script type="text/javascript" src="src/objects/Truck.js"></script>');
-document.write('<script type="text/javascript" src="src/objects/ContainerFromFile.js"></script>');
+document.write('<script type="text/javascript" src="src/objects/ConeFromFile.js"></script>');
 document.write('<script type="text/javascript" src="src/objects/BunnyFromFile.js"></script>');
 document.write('<script type="text/javascript" src="src/objects/Road.js"></script>');
 //document.write('<script type="text/javascript" src="src/animation/Animation.js"></script>');
@@ -37,10 +37,15 @@ function main() {
     truck = new Truck();
     scene.add(truck);
 
-    var container = new ContainerFromFile();
-    container.position.set(20,0,40);
-    container.scale.set(0.1, 0.1, 0.1);
-    scene.add(container);
+    var cones = new THREE.Group();
+    cones.position.set(185, -4.25, 0);
+    cones.scale.set(0.05, 0.05, 0.05);
+    var cone1 = new ConeFromFile();
+    cone1.position.z = 100;
+    var cone2 = new ConeFromFile();
+    cone2.position.z = -100;
+    cones.add(cone1, cone2);
+    scene.add(cones);
 
     scene.add(new Road(2000, 2000, 16));
 
@@ -50,7 +55,7 @@ function main() {
     scene.add(directionalLight);
 
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(30, 40, 50);
+    camera.position.set(125, 40, 200);
     camera.lookAt(0, 0, 0);
 
     var gui = new dat.GUI();
@@ -71,6 +76,7 @@ function main() {
 
     var orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
     orbitControls.target = new THREE.Vector3(0, 0, 0);
+    orbitControls.maxPolarAngle = Math.PI / 2;
     orbitControls.update();
 
     var soundscape = new Soundscape();

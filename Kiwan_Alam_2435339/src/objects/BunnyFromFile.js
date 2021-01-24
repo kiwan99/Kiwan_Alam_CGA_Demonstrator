@@ -7,7 +7,6 @@ class BunnyFromFile extends THREE.Group {
     }
 
     load(thisBunny) {
-
         this.fbxLoader.load("src/models/Bunny/Bunny.fbx", function (fbx) {
             thisBunny.add(fbx);
         });

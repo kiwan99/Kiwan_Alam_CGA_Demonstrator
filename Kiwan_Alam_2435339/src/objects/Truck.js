@@ -163,7 +163,7 @@ class Truck extends THREE.Group {
             color: 0xFFFFFF,
             transparent: true
         });
-        texturPlaneMaterial.map = new THREE.TextureLoader().load('src/images/1024px-WebGL.png');
+        texturPlaneMaterial.map = new THREE.TextureLoader().load('src/images/WebGL_Logo.png');
         texturPlaneMaterial.map.anisotropy = 8;
 
         var texturPlaneMesh1 = new THREE.Mesh(texturPlaneGeometry, texturPlaneMaterial);
@@ -200,13 +200,13 @@ class Truck extends THREE.Group {
         var reifenMaterial = new THREE.MeshLambertMaterial({
             color: 0x333333
         });
+        /*
         var bumpMaterial = new THREE.MeshPhongMaterial({
            color: 0x333333
         });
         bumpMaterial.bumpMap = new THREE.TextureLoader().load('src/images/Tire_BumpMap.png');
         bumpMaterial.bumpScale = 1.0;
 
-        /*
         var materialArray = [
           bumpMaterial,
           bumpMaterial,
@@ -223,7 +223,7 @@ class Truck extends THREE.Group {
             color: 0x888888
         });
 
-        var reifen1 = new THREE.Mesh(reifenGeometry, bumpMaterial);
+        var reifen1 = new THREE.Mesh(reifenGeometry, reifenMaterial);
         reifen1.rotation.x = -90 * DEG_TO_RAD;
         reifen1.position.x = 20;
         reifen1.position.z = -10;
@@ -274,7 +274,7 @@ class Truck extends THREE.Group {
 
     //Animationen
         var speed = 3000;
-        var translate = 100;
+        var translate = 150;
         var rotate = 1000;
 
 
@@ -319,7 +319,7 @@ class Truck extends THREE.Group {
         this.sounds.set("Hupe", hupe);
         this.add(hupe);
 
-        var rückwärtsgang = soundscape.createSound("src/sound/files/beep.wav", 50, true);
+        var rückwärtsgang = soundscape.createSound("src/sound/files/beep.mp3", 50, true);
         this.sounds.set("Rückwärtsgang", rückwärtsgang);
         this.add(rückwärtsgang);
     }
