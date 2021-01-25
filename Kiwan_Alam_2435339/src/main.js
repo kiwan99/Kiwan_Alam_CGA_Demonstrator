@@ -39,10 +39,8 @@ function main() {
     cones.scale.set(0.05, 0.05, 0.05);
     var cone1 = new ConeFromFile();
     cone1.position.z = 100;
-    cone1.castShadow = true;
     var cone2 = new ConeFromFile();
     cone2.position.z = -100;
-    cone2.castShadow = true;
     cones.add(cone1, cone2);
     scene.add(cones);
 
@@ -50,17 +48,17 @@ function main() {
 
     var lights = new Lights();
     scene.add(lights.createAmbientLight(0.4));
-    var directionalLight = lights.createDirectionalLight(50, 50, 50, 0.7);
+    var directionalLight = lights.createDirectionalLight(-100, 50, -50, 0.5);
     scene.add(directionalLight);
 
-    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(125, 40, 200);
+    camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 2500);
+    camera.position.set(270, 130, -190);
     camera.lookAt(0, 0, 0);
 
     var gui = new dat.GUI();
-    gui.add(directionalLight.position, "x", -50, 50);
-    gui.add(directionalLight.position, "y", -50, 50);
-    gui.add(directionalLight.position, "z", -50, 50);
+    gui.add(directionalLight.position, "x", -250, 250);
+    gui.add(directionalLight.position, "y", 0, 150);
+    gui.add(directionalLight.position, "z", -250, 250);
 
     var stats = new Stats();
     stats.showPanel(0);
@@ -94,6 +92,9 @@ function main() {
         TWEEN.update();
 
         renderer.render(scene, camera);
+
+        console.log(camera);
+
         stats.end();
         requestAnimationFrame(mainLoop);
     }

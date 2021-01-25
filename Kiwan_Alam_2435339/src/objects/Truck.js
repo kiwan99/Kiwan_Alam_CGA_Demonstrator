@@ -333,11 +333,11 @@ class Truck extends THREE.Group {
 
     //Sounds
     loadSounds(soundscape) {
-        var hupe = soundscape.createSound("src/sound/files/horn.wav", 100, false);
+        var hupe = soundscape.createSound("src/sound/files/horn.wav", 50, false);
         this.sounds.set("Hupe", hupe);
         this.add(hupe);
 
-        var rückwärtsgang = soundscape.createSound("src/sound/files/beep.mp3", 100, false);
+        var rückwärtsgang = soundscape.createSound("src/sound/files/beep.mp3", 50, false);
         this.sounds.set("Rückwärtsgang", rückwärtsgang);
         this.add(rückwärtsgang);
     }

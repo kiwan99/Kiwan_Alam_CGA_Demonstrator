@@ -20,10 +20,10 @@ class Lights {
         spotLight.castShadow = true;
         spotLight.shadow.mapSize.width = 1024;
         spotLight.shadow.mapSize.height = 1024;
-        //spotLight.shadow.camera.aspect = 1;
-        //spotLight.shadow.camera.near = 10;
-        //spotLight.shadow.camera.far = 40;
-        //scene.add(new THREE.CameraHelper(spotLight.shadow.camera));
+        spotLight.shadow.camera.aspect = 1;
+        spotLight.shadow.camera.near = 10;
+        spotLight.shadow.camera.far = 100;
+        scene.add(new THREE.CameraHelper(spotLight.shadow.camera));
         return spotLight;
     }
 
@@ -36,10 +36,12 @@ class Lights {
         directionaLight.shadow.radius = 2;
         directionaLight.shadow.mapSize.width = 2048;
         directionaLight.shadow.mapSize.height = 2048;
-        directionaLight.shadow.camera.top = 100;
-        directionaLight.shadow.camera.bottom = -100;
-        directionaLight.shadow.camera.left = -100;
-        directionaLight.shadow.camera.right = 100;
+
+        var x = 150;
+        directionaLight.shadow.camera.top = x;
+        directionaLight.shadow.camera.bottom = -x;
+        directionaLight.shadow.camera.left = -x;
+        directionaLight.shadow.camera.right = x;
         //scene.add(new THREE.CameraHelper(directionaLight.shadow.camera));
         return directionaLight;
     }

@@ -47,7 +47,7 @@ function executeRaycast(event) {
         }
 
         else if (firstHit.name == "linkes Fenster") {
-            truck.sounds.get("Hupe").setVolume(0.6);
+            truck.sounds.get("Hupe").setVolume(0.5);
             truck.sounds.get("Hupe").play();
         }
 
