@@ -26,7 +26,6 @@ function executeRaycast(event) {
 
                 truck.state.rückwärtsgang = false;
                 window.dispatchEvent(new Event("truckStateChanged"));
-                //truck.sounds.get("Rückwärtsgang").pause();
 
             } else {
                 firstHit.userData.forwardTruckTranslation.stop();
@@ -48,7 +47,7 @@ function executeRaycast(event) {
         }
 
         else if (firstHit.name == "linkes Fenster") {
-            truck.sounds.get("Hupe").setVolume(0.7);
+            truck.sounds.get("Hupe").setVolume(0.6);
             truck.sounds.get("Hupe").play();
         }
 

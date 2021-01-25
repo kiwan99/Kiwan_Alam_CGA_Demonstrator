@@ -5,9 +5,7 @@ class Truck extends THREE.Group {
         super();
 
         this.addParts();
-        //this.animations = new Array();
         this.sounds = new Map();
-        //this.animationMixer = null;
         this.state = {
             rückwärtsgang: false
         };
@@ -15,8 +13,8 @@ class Truck extends THREE.Group {
 
     addParts() {
 
-        const SCALE = 5;
-        const SCALE2 = 2.5;
+        const SCALE = 5; //fahrerhaus
+        const SCALE2 = 2.5; //fenster
 
         var truck = new THREE.Group();
 
@@ -32,7 +30,7 @@ class Truck extends THREE.Group {
         fahrerhausShape.lineTo(2.15 * SCALE ,0.95 * SCALE);
         fahrerhausShape.lineTo(2.25 * SCALE ,0.6 * SCALE);
         fahrerhausShape.lineTo(2.3 * SCALE,-1 * SCALE);
-        fahrerhausShape.lineTo(-2.15 * SCALE,-1 * SCALE); //Unterseite 22,5 Einheiten
+        fahrerhausShape.lineTo(-2.15 * SCALE,-1 * SCALE);
         fahrerhausShape.lineTo(-2.15 * SCALE,2.65 * SCALE);
         var extrudeSettings = {
             steps: 1,
@@ -76,7 +74,6 @@ class Truck extends THREE.Group {
 
 
     //Autoglas
-
         var windschutzscheibeGeometry = new THREE.BoxGeometry(0.1, 8, 18);
         var windschutzscheibeMaterial = new THREE.MeshLambertMaterial({
             color: 0x444444
@@ -120,9 +117,10 @@ class Truck extends THREE.Group {
         fenster.add(fenster2);
 
         fahrerhausGroup.add(fenster);
+        truck.add(fahrerhausGroup);
 
 
-    //Leuchten
+        //Leuchten
         var frontlampen = new THREE.Group();
         frontlampen.position.set(32, 4, 0);
         var frontlampeGeometry = new THREE.BoxGeometry(0.5, 2.5, 4);
@@ -172,11 +170,8 @@ class Truck extends THREE.Group {
 
         truck.add(frontlampen, reflektoren);
 
-        truck.add(fahrerhausGroup);
-
 
     //Anhänger
-
         var anhängerGeometry = new THREE.BoxGeometry(30, 20, 25);
         var anhängerMaterial = new THREE.MeshLambertMaterial({
             color: 0xECD5E3
@@ -220,7 +215,6 @@ class Truck extends THREE.Group {
 
     //Reifen und Felgen
         var reifen = new THREE.Group();
-        //reifen.rotation.x = -90 * DEG_TO_RAD;
 
         var reifenGeometry = new THREE.CylinderGeometry(5,5,2.5,16,1,false);
         var reifenMaterial = new THREE.MeshLambertMaterial({
@@ -289,7 +283,6 @@ class Truck extends THREE.Group {
         var translate = 150;
         var rotate = 1000;
 
-
         this.tweens = {
             forward: false,
 
@@ -319,7 +312,6 @@ class Truck extends THREE.Group {
         windschutzscheibe.userData = this.tweens;
 
         this.add(truck);
-
     }
 
     //Sounds

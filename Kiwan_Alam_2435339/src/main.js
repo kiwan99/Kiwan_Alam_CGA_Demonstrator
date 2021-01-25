@@ -1,3 +1,4 @@
+// External libraries
 document.write('<script type="text/javascript" src="./../lib/three.js-r121/build/three.js"></script>');
 document.write('<script type="text/javascript" src="./../lib/three.js-r121/examples/js/controls/OrbitControls.js"></script>');
 document.write('<script type="text/javascript" src="./../lib/three.js-r121/examples/js/libs/inflate.min.js"></script>');
@@ -7,19 +8,15 @@ document.write('<script type="text/javascript" src="./../lib/dat.gui-0.7.7/build
 document.write('<script type="text/javascript" src="./../lib/ThreeCSG-1/three-csg.js"></script>');
 
 // Own modules
-
 document.write('<script type="text/javascript" src="src/objects/Lights.js"></script>');
 document.write('<script type="text/javascript" src="src/objects/Truck.js"></script>');
 document.write('<script type="text/javascript" src="src/objects/ConeFromFile.js"></script>');
 document.write('<script type="text/javascript" src="src/objects/BunnyFromFile.js"></script>');
 document.write('<script type="text/javascript" src="src/objects/Road.js"></script>');
-//document.write('<script type="text/javascript" src="src/animation/Animation.js"></script>');
 document.write('<script type="text/javascript" src="src/animation/Tween.js"></script>');
-//document.write('<script type="text/javascript" src="src/physics/Physics.js"></script>');
 document.write('<script type="text/javascript" src="src/sound/Soundscape.js"></script>');
 
 // Event functions
-
 document.write('<script type="text/javascript" src="src/eventfunctions/updateAspectRatio.js"></script>');
 document.write('<script type="text/javascript" src="src/eventfunctions/calculateMousePosition.js"></script>');
 document.write('<script type="text/javascript" src="src/eventfunctions/executeRaycast.js"></script>');
@@ -31,8 +28,8 @@ function main() {
 
     scene = new THREE.Scene();
 
-    var axes = new THREE.AxesHelper(20);
-    scene.add(axes);
+    //var axes = new THREE.AxesHelper(20);
+    //scene.add(axes);
 
     truck = new Truck();
     scene.add(truck);
@@ -76,25 +73,21 @@ function main() {
 
     var orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
     orbitControls.target = new THREE.Vector3(0, 0, 0);
-    orbitControls.maxPolarAngle = Math.PI / 2;
+    orbitControls.maxPolarAngle = Math.PI / 2; //Kamera geht nicht unter Road
     orbitControls.update();
 
     var soundscape = new Soundscape();
     truck.loadSounds(soundscape);
-    truck.tweens.backwardTruckTranslation.onComplete(function () {truck.sounds.get("Rückwärtsgang").stop()});
+    truck.tweens.backwardTruckTranslation.onComplete(function () {
+        truck.state.rückwärtsgang = false
+        window.dispatchEvent(new Event("truckStateChanged"));
+    });
     camera.add(soundscape.getAudioListener());
 
-    var clock = new THREE.Clock();
 
     function mainLoop() {
 
         stats.begin();
-
-        var delta = clock.getDelta();
-
-        if (truck.animationMixer != null) {
-            truck.animationMixer.update(delta);
-        }
 
         TWEEN.update();
 
