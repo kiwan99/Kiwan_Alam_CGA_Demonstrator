@@ -9,7 +9,7 @@ class Road extends THREE.Mesh {
             side: THREE.DoubleSide
         });
 
-        var roadTexture = new THREE.TextureLoader().load("src/images/Road.png");
+        var roadTexture = new THREE.TextureLoader().load("src/images/road.png");
 
         roadTexture.repeat.set(segments, segments);
         roadTexture.wrapS = THREE.RepeatWrapping;

@@ -39,8 +39,10 @@ function main() {
     cones.scale.set(0.05, 0.05, 0.05);
     var cone1 = new ConeFromFile();
     cone1.position.z = 100;
+    cone1.castShadow = true;
     var cone2 = new ConeFromFile();
     cone2.position.z = -100;
+    cone2.castShadow = true;
     cones.add(cone1, cone2);
     scene.add(cones);
 
